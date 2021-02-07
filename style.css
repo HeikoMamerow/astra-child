@@ -7,3 +7,19 @@ Author URI:
 Template:       astra
 Version:        0.1.0
 */
+
+
+/****************************************************************
+ 
+Here are the tweaks. 
+
+****************************************************************/
+
+/* Show submenus on mobile. */
+.show-submenus-mobile .ast-hidden {
+    display: block !important;
+}
+
+.ast-header-break-point .main-header-bar .main-header-bar-navigation .show-submenus-mobile.menu-item-has-children .sub-menu {
+    display: block !important;
+}
