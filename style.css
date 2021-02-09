@@ -23,3 +23,26 @@ Here are the tweaks.
 .ast-header-break-point .main-header-bar .main-header-bar-navigation .show-submenus-mobile.menu-item-has-children .sub-menu {
     display: block !important;
 }
+
+/* Flexbox for Wiederkehrende Veranstaltungen in menu. */
+.main-header-menu .sub-menu .menu-link.menu-link-flex {
+    display: flex;
+}
+
+.menu-link-flex-item1 {
+    flex: 0 0 40px;
+    font-weight: 700;
+}
+
+.menu-link-flex-item2 {
+    flex: 0 0 120px;
+}
+
+.menu-link-flex-item3 {
+    flex: 0 0 auto;
+}
+
+/* Hide navigation */
+.single-event .post-navigation {
+    display: none;
+}
