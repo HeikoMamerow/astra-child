@@ -44,3 +44,9 @@ function my_em_scopes( $scopes ) {
 	);
 	return $scopes + $my_scopes;
 }
+
+/**
+ * Nesting shortcodes in menu.
+ * Need it for Event manager plugin.
+ */
+add_filter( 'wp_nav_menu', 'do_shortcode' );
