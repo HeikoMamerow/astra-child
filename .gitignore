@@ -1,3 +1,6 @@
+# Ignore stuff folder.
+stuff/
+
 # Ignore PhpStorm configs
 .idea/
 
