@@ -153,7 +153,7 @@ function em_advanced_notice_func() {
 			//$event .= $em_event->event_attributes->AdvancedNoticeDateStart .' ';
 			$string .= '<a class="menu-link-flex" href="' . $em_event->guid . '">';
 			$string .= '<span class="menu-link-flex-item2">' . date( 'G:i', strtotime( $em_event->start_time ) ) . '</span> ';
-			$string .= '<span class="menu-link-flex-item3">Bald: ' . $em_event->event_name . '</span>';
+			$string .= '<span class="menu-link-flex-item3">' . $em_event->event_name . '</span>';
 			$string .= '</a>';
 		}
 
