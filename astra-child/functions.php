@@ -7,20 +7,13 @@
  * @package astra-child
  */
 
-add_action( 'wp_enqueue_scripts', 'astra_parent_theme_enqueue_styles' );
-
 /**
  * Enqueue scripts and styles.
  */
-function astra_parent_theme_enqueue_styles() {
-	wp_enqueue_style( 'astra-style', get_template_directory_uri() . '/style.css' );
-	wp_enqueue_style(
-		'astra-child-style',
-		get_stylesheet_directory_uri() . '/style.css',
-		array( 'astra-style' )
-	);
-
+function astra_parent_theme_enqueue() {
+	wp_enqueue_style( 'astra-child-style', get_stylesheet_directory_uri() . '/style.css' );
 }
+add_action( 'wp_enqueue_scripts', 'astra_parent_theme_enqueue' );
 
 /**
  * Custom event scope for Event Manager plugin.
@@ -34,6 +27,7 @@ function my_em_scope_conditions( $conditions, $args ) {
 		$end_date            = date( 'Y-m-d', strtotime( '+6 day', current_time( 'timestamp' ) ) );
 		$conditions['scope'] = " (event_start_date BETWEEN CAST('$start_date' AS DATE) AND CAST('$end_date' AS DATE)) OR (event_end_date BETWEEN CAST('$end_date' AS DATE) AND CAST('$start_date' AS DATE))";
 	}
+
 	return $conditions;
 }
 
@@ -42,6 +36,7 @@ function my_em_scopes( $scopes ) {
 	$my_scopes = array(
 		'next7days' => 'next7days',
 	);
+
 	return $scopes + $my_scopes;
 }
 
