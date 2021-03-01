@@ -47,6 +47,7 @@ function my_em_scopes( $scopes ) {
  */
 add_filter( 'wp_nav_menu', 'do_shortcode' );
 add_filter( 'the_content', 'do_shortcode' );
+
 /**
  * Shortcode for advanced notice in menu.
  * This is an enhancement of the Events Manager plugin.
@@ -57,8 +58,10 @@ function em_advanced_notice_func() {
 	 * 1) Find all categories with events inside the scope (next7days).
 	 */
 
-	$string       = '';
-	$category_ids = [];
+	$string             = '';
+	$category_ids       = [];
+	$exclude_recurrings = [];
+
 
 	date_default_timezone_set( 'Europe/Berlin' );
 	$scope_start       = date( 'Y-m-d' );
@@ -117,16 +120,24 @@ function em_advanced_notice_func() {
 		/*
 		 * 2.a Show events from active recurrences.
 		 */
+
+		// Convert category slug (category_nicename) into date
+		$strtotime = strtotime( 'next ' . $category->category_nicename );
+		$scope     = date( 'Y-m-d', $strtotime );
+
 		// Get events within the scope (7days)
 		$em_events = EM_Events::get( [
 			'hide_empty'  => 1,
-			'category'    => $category->cat_ID,
+			'category'    => $category->term_id,
 			'recurrences' => 1,
 			'orderby'     => "event_start_time",
-			'scope'       => "next7days",
+			'scope'       => $scope,
 		] );
 
+
 		foreach ( $em_events as $em_event ) {
+			$exclude_recurrings[] = $em_event->recurrence_id;
+
 			$string .= '<a class="menu-link-flex" href="' . $em_event->guid . '">';
 			$string .= '<span class="menu-link-flex-item2">' . date( 'G:i', strtotime( $em_event->start_time ) ) . '</span> ';
 			$string .= '<span class="menu-link-flex-item3">' . $em_event->event_name . '</span>';
@@ -147,10 +158,16 @@ function em_advanced_notice_func() {
 		] );
 
 		foreach ( $em_events as $em_event ) {
-			$string .= '<a class="menu-link-flex" href="' . $em_event->guid . '">';
-			$string .= '<span class="menu-link-flex-item2">' . date( 'G:i', strtotime( $em_event->start_time ) ) . '</span> ';
-			$string .= '<span class="menu-link-flex-item3">' . $em_event->event_name . '</span>';
-			$string .= '</a>';
+
+			// Show only events not from the same recurring ID
+			if ( ! in_array( $em_event->recurrence_id, $exclude_recurrings ) ) {
+
+				$string .= '<a class="menu-link-flex" href="' . $em_event->guid . '">';
+				$string .= '<span class="menu-link-flex-item2">' . date( 'G:i', strtotime( $em_event->start_time ) ) . '</span> ';
+				$string .= '<span class="menu-link-flex-item3">' . $em_event->event_name . '</span>';
+				$string .= '</a>';
+
+			}
 		}
 
 		$string .= '</div>';
