@@ -29,10 +29,29 @@ Here are the tweaks.
 	margin-bottom: 0;
 }
 
-.menu-link-flex,
-.main-header-menu .sub-menu .menu-link.menu-link-flex {
-	display: flex;
+
+@media (min-width: 520px) {
+	.menu-link-flex,
+	.main-header-menu .sub-menu .menu-link.menu-link-flex {
+		display: flex;
+	}
 }
+
+@media (max-width: 519px) {
+	.ast-header-break-point .main-navigation ul .menu-item .menu-link.menu-link-day {
+		border-bottom: 0;
+	}
+
+	.ast-header-break-point .main-navigation ul.sub-menu .menu-item .menu-link::before {
+		content: none;
+	}
+
+	.menu-link-flex,
+	.main-header-menu .sub-menu .menu-link.menu-link-flex {
+		display: block;
+	}
+}
+
 
 .menu-link-day {
 	font-weight: bold;
@@ -79,6 +98,7 @@ Here are the tweaks.
 .em-next-recurring-events-horizontal-list p {
 	text-align: center;
 }
+
 .em-next-recurring-events-horizontal-list h3 {
 	font-size: 100%;
 	margin-bottom: 10px;
@@ -86,7 +106,7 @@ Here are the tweaks.
 }
 
 /* em-recurring-events-in-menu */
-.main-header-menu .sub-menu .em-recurring-events-in-menu:not(first-of-type) .menu-link{
+.main-header-menu .sub-menu .em-recurring-events-in-menu:not(first-of-type) .menu-link {
 	padding-top: 0;
 	padding-bottom: .45em;
 }
