@@ -134,20 +134,36 @@ function em_advanced_notice_func() {
 	$timestamp  = array_column( $events, 'timestamp' );
 	array_multisort( $day_number, SORT_ASC, $start_time, SORT_ASC, $timestamp, SORT_ASC, $events );
 
+	// Marker value for the start in the loop
+	$event_day = 'start';
+
 	foreach ( $events as $event ) {
 
-		$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
-		$string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
-		$string .= '<div class="menu-link menu-link-event-list">';
+		// Need special markup for the first loop.
+		if ( $event_day === 'start' ) {
+			$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+			$string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
+			$string .= '<div class="menu-link menu-link-event-list">';
+			// Need special markup for new weekday in the loop.
+		} elseif ( $event_day != $event['day'] ) {
+			$string .= '</div>'; // .menu-link-event-list
+			$string .= '</div>'; // .menu-link-flex
+
+			$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+			$string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
+			$string .= '<div class="menu-link menu-link-event-list">';
+		}
 
 		$string .= '<a class="menu-link-flex" href="' . $event['guid'] . '">';
 		$string .= '<span class="menu-link-flex-item2">' . date( 'G:i', strtotime( $event['start_time'] ) ) . '</span> ';
 		$string .= '<span class="menu-link-flex-item3">' . $event['event_name'] . '</span>';
 		$string .= '</a>';
 
-		$string .= '</div>';
-		$string .= '</div>';
+		$event_day = $event['day'];
 	}
+
+	$string .= '</div>'; // .menu-link-event-list
+	$string .= '</div>'; // .menu-link-flex
 
 	return $string;
 
