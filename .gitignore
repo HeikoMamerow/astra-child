@@ -27,3 +27,4 @@ node_modules/
 *.log
 *.sql
 *.sqlite
+!/package-lock.json
