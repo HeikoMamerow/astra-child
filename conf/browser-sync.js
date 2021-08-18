@@ -4,7 +4,7 @@ const bs = require( 'browser-sync' ).create();
 
 bs.init( {
 	proxy: {
-		target: 'https://demo2.meditieren-lernen.test',
+		target: 'https://meditieren-lernen.local',
 	},
 	url: 'https://localhost:3000',
 	https: true,
