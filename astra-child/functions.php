@@ -23,7 +23,7 @@ add_action( 'wp_enqueue_scripts', 'astra_parent_theme_enqueue' );
  */
 add_filter( 'em_events_build_sql_conditions', 'my_em_scope_conditions', 1, 2 );
 function my_em_scope_conditions( $conditions, $args ) {
-	if ( ! empty( $args['scope'] ) && $args['scope'] == 'next7days' ) {
+	if ( ! empty( $args['scope'] ) && $args['scope'] === 'next7days' ) {
 		$start_date          = date( 'Y-m-d', current_time( 'timestamp' ) );
 		$end_date            = date( 'Y-m-d', strtotime( '+6 day', current_time( 'timestamp' ) ) );
 		$conditions['scope'] = " (event_start_date BETWEEN CAST('$start_date' AS DATE) AND CAST('$end_date' AS DATE)) OR (event_end_date BETWEEN CAST('$end_date' AS DATE) AND CAST('$start_date' AS DATE))";
@@ -68,7 +68,7 @@ function em_advanced_notice_func() {
 	$scope_today        = date( 'Y-m-d' );
 	$scope_6days_later  = date( 'Y-m-d', strtotime( "+6 day" ) );
 	$scope_7days_later  = date( 'Y-m-d', strtotime( "+7 day" ) );
-	$scope_21days_later = date( 'Y-m-d', strtotime( "+21 day" ) );
+	$scope_182days_later = date( 'Y-m-d', strtotime( "+182 day" ) );
 
 	// Get events within the scope (today + 6 days)
 	$em_events = EM_Events::get( [
@@ -101,7 +101,7 @@ function em_advanced_notice_func() {
 		'hide_empty'  => 1,
 		'recurrences' => 1,
 		'orderby'     => "event_start_date,event_start_time",
-		'scope'       => $scope_7days_later . "," . $scope_21days_later,
+		'scope'       => $scope_7days_later . "," . $scope_182days_later,
 	] );
 
 
