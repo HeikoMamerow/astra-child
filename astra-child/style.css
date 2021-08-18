@@ -35,6 +35,10 @@ Here are the tweaks.
 	.main-header-menu .sub-menu .menu-link.menu-link-flex {
 		display: flex;
 	}
+
+	.main-header-menu .sub-menu .menu-link.menu-link-flex .menu-link-day {
+		flex: 0 0 40px;
+	}
 }
 
 @media (max-width: 519px) {
