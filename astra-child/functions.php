@@ -65,9 +65,9 @@ function em_advanced_notice_func() {
 	// Set to german time zone
 	date_default_timezone_set( 'Europe/Berlin' );
 
-	$scope_today        = date( 'Y-m-d' );
-	$scope_6days_later  = date( 'Y-m-d', strtotime( "+6 day" ) );
-	$scope_7days_later  = date( 'Y-m-d', strtotime( "+7 day" ) );
+	$scope_today         = date( 'Y-m-d' );
+	$scope_6days_later   = date( 'Y-m-d', strtotime( "+6 day" ) );
+	$scope_7days_later   = date( 'Y-m-d', strtotime( "+7 day" ) );
 	$scope_182days_later = date( 'Y-m-d', strtotime( "+182 day" ) );
 
 	// Get events within the scope (today + 6 days)
@@ -170,3 +170,15 @@ function em_advanced_notice_func() {
 }
 
 add_shortcode( 'em_advanced_notice', 'em_advanced_notice_func' );
+
+
+/**
+ * Add meta tag on front page for Facebook check.
+ */
+function facebook_domain_verification() {
+	if ( is_front_page() ) {
+		echo "\n" . '<meta name="facebook-domain-verification" content="jwhc6dx6k85c0pk18096orl3gj0v38" />' . "\n";
+	}
+}
+
+add_action( 'wp_head', 'facebook_domain_verification' );
