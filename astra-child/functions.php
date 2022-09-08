@@ -182,3 +182,31 @@ function facebook_domain_verification() {
 }
 
 add_action( 'wp_head', 'facebook_domain_verification' );
+
+
+/**
+ * Add meta tag on front page for Facebook Pixel.
+ */
+function facebook_pixel() {
+	if ( is_front_page() ) {
+		echo "\n" . '<!-- Meta Pixel Code -->' . "\n";
+		echo "\n" . '<script>' . "\n";
+		echo "\n" . '!function(f,b,e,v,n,t,s)';
+		echo "\n" . '{if(f.fbq)return;n=f.fbq=function(){n.callMethod?';
+		echo "\n" . '	n.callMethod.apply(n,arguments):n.queue.push(arguments)};';
+		echo "\n" . '	if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version=\'2.0\';';
+		echo "\n" . '	n.queue=[];t=b.createElement(e);t.async=!0;';
+		echo "\n" . '	t.src=v;s=b.getElementsByTagName(e)[0];';
+		echo "\n" . '	s.parentNode.insertBefore(t,s)}(window, document,\'script\',';
+		echo "\n" . '\'https://connect.facebook.net/en_US/fbevents.js\');';
+		echo "\n" . 'fbq(\'init\', \'786499535732236\');';
+		echo "\n" . 'fbq(\'track\', \'PageView\');' . "\n";
+		echo "\n" . '</script>' . "\n";
+		echo "\n" . '<noscript><img height="1" width="1" style="display:none"' . "\n";
+		echo "\n" . 'src="https://www.facebook.com/tr?id=786499535732236&ev=PageView&noscript=1"' . "\n";
+		echo "\n" . '    /></noscript>' . "\n";
+		echo "\n" . '<!-- End Meta Pixel Code -->' . "\n";
+	}
+}
+
+add_action( 'wp_head', 'facebook_pixel' );
