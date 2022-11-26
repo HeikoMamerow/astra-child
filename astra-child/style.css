@@ -68,6 +68,10 @@ Here are the tweaks.
 	content: none;
 }
 
+.menu-link-event-list {
+	width: 100%;
+}
+
 .menu-link-event-list .menu-link:nth-of-type(n+2) {
 	padding-top: 0;
 }
@@ -113,4 +117,18 @@ Here are the tweaks.
 .main-header-menu .sub-menu .em-recurring-events-in-menu:not(first-of-type) .menu-link {
 	padding-top: 0;
 	padding-bottom: .45em;
+}
+
+/* Zweigstellen */
+.zweigstellen-menu .sub-menu {
+	width: 500px
+}
+
+.zweigstellen-menu-title {
+	line-height: 1.49;
+	padding: .9em 1em;
+}
+
+.ast-header-break-point .main-navigation .sub-menu .zweigstellen-menu-title {
+	padding-left: 30px;
 }
