@@ -8,12 +8,23 @@ function em_advanced_notice_func() {
 	$string         = '';
 	$recurrence_ids = [];
 
-	// Set to german language
-	//setlocale (LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge');
-	setlocale( LC_ALL, 'de_DE' );
-
 	// Set to german time zone
 	date_default_timezone_set( 'Europe/Berlin' );
+
+	// Set to german language
+	//setlocale(LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge');
+	setlocale( LC_ALL, 'de_DE.UTF8' );
+
+	// "strftime" is deprecated.
+	// We need to use IntlDateFormatter for date translation
+	$localDateformat = new IntlDateFormatter(
+		'de-DE',
+		IntlDateFormatter::FULL,
+		IntlDateFormatter::FULL,
+		'Europe/Berlin',
+		IntlDateFormatter::GREGORIAN,
+		'eee'
+	);
 
 	$scope_today         = date( 'Y-m-d' );
 	$scope_6days_later   = date( 'Y-m-d', strtotime( "+6 day" ) );
@@ -32,9 +43,9 @@ function em_advanced_notice_func() {
 	foreach ( $em_events as $em_event ) {
 		$events[] = [
 			'day_number'    => date( 'N', strtotime( $em_event->start_date ) ),
-			'day'           => strftime( '%a', strtotime( $em_event->start_date ) ),
+			'day'           => $localDateformat->format( strtotime( $em_event->start_date ) ),
 			'timestamp'     => strtotime( $em_event->start_date ),
-			'start_time'    => date( 'G:i', strtotime( $em_event->start_time ) ),
+			'start_time'    => date( 'H:i', strtotime( $em_event->start_time ) ),
 			'recurrence_id' => $em_event->recurrence_id,
 			'guid'          => $em_event->guid,
 			'event_name'    => $em_event->event_name,
@@ -66,9 +77,9 @@ function em_advanced_notice_func() {
 
 			$events[] = [
 				'day_number'    => date( 'N', strtotime( $em_event_7_to_21->start_date ) ),
-				'day'           => strftime( '%a', strtotime( $em_event_7_to_21->start_date ) ),
+				'day'           => $localDateformat->format( strtotime( $em_event_7_to_21->start_date ) ),
 				'timestamp'     => strtotime( $em_event_7_to_21->start_date ),
-				'start_time'    => date( 'G:i', strtotime( $em_event_7_to_21->start_time ) ),
+				'start_time'    => date( 'H:i', strtotime( $em_event_7_to_21->start_time ) ),
 				'recurrence_id' => $em_event_7_to_21->recurrence_id,
 				'guid'          => $em_event_7_to_21->guid,
 				'event_name'    => $em_event_7_to_21->event_name,
