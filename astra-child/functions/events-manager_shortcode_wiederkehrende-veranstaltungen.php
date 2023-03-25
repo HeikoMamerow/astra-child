@@ -3,100 +3,101 @@
  * Shortcodes for advanced notice in menu "Wiederkehrende Veranstaltungen".
  * This is an enhancement of the Events Manager plugin.
  */
-function em_advanced_notice_func() {
+function em_advanced_notice_func()
+{
+    $string = '';
 
-	$string = '';
+    // Set to german time zone
+    date_default_timezone_set('Europe/Berlin');
 
-	// Set to german time zone
-	date_default_timezone_set( 'Europe/Berlin' );
+    // Set to german language
+    setlocale(LC_ALL, 'de_DE.UTF8');
 
-	// Set to german language
-	setlocale( LC_ALL, 'de_DE.UTF8' );
+    // "strftime" is deprecated.
+    // We need to use IntlDateFormatter for date translation
+    $localDateformat = new IntlDateFormatter(
+        'de-DE',
+        IntlDateFormatter::FULL,
+        IntlDateFormatter::FULL,
+        'Europe/Berlin',
+        IntlDateFormatter::GREGORIAN,
+        'eee'
+    );
 
-	// "strftime" is deprecated.
-	// We need to use IntlDateFormatter for date translation
-	$localDateformat = new IntlDateFormatter(
-		'de-DE',
-		IntlDateFormatter::FULL,
-		IntlDateFormatter::FULL,
-		'Europe/Berlin',
-		IntlDateFormatter::GREGORIAN,
-		'eee'
-	);
+    $number_days = get_field('anzahl_der_tage', 'option');
+    $datetime    = '+' . $number_days . ' day';
 
-	$scope_today = date( 'Y-m-d' );
-	$scope_later = date( 'Y-m-d', strtotime( "+31 day" ) );
+    $scope_today = date('Y-m-d');
+    $scope_later = date('Y-m-d', strtotime($datetime));
 
-	// Get events within the scope (today + 31 days)
-	$em_events = EM_Events::get( [
-		'hide_empty'  => 1,
-		'recurrences' => 1,
-		'orderby'     => "event_start_date,event_start_time",
-		'scope'       => $scope_today . "," . $scope_later,
-	] );
+    // Get events within the scope (today + 31 days)
+    $em_events = EM_Events::get([
+        'hide_empty'  => 1,
+        'recurrences' => 1,
+        'orderby'     => "event_start_date,event_start_time",
+        'scope'       => $scope_today . "," . $scope_later,
+    ]);
 
-	// Set all event data in array.
-	foreach ( $em_events as $em_event ) {
-		$events[] = [
-			'day_number'    => date( 'N', strtotime( $em_event->start_date ) ),
-			'day'           => $localDateformat->format( strtotime( $em_event->start_date ) ),
-			'timestamp'     => strtotime( $em_event->start_date ),
-			'start_time'    => date( 'H:i', strtotime( $em_event->start_time ) ),
-			'recurrence_id' => $em_event->recurrence_id,
-			'guid'          => $em_event->guid,
-			'event_name'    => $em_event->event_name,
-		];
-	}
+    // Set all event data in array.
+    foreach ($em_events as $em_event) {
+        $events[] = [
+            'day_number'    => date('N', strtotime($em_event->start_date)),
+            'day'           => $localDateformat->format(strtotime($em_event->start_date)),
+            'timestamp'     => strtotime($em_event->start_date),
+            'start_time'    => date('H:i', strtotime($em_event->start_time)),
+            'recurrence_id' => $em_event->recurrence_id,
+            'guid'          => $em_event->guid,
+            'event_name'    => $em_event->event_name,
+        ];
+    }
 
-	// First sort by day then by time and then by timestamp.
-	$day_number = array_column( $events, 'day_number' );
-	$start_time = array_column( $events, 'start_time' );
-	$timestamp  = array_column( $events, 'timestamp' );
-	array_multisort( $day_number, SORT_ASC, $start_time, SORT_ASC, $timestamp, SORT_ASC, $events );
+    // First sort by day then by time and then by timestamp.
+    $day_number = array_column($events, 'day_number');
+    $start_time = array_column($events, 'start_time');
+    $timestamp  = array_column($events, 'timestamp');
+    array_multisort($day_number, SORT_ASC, $start_time, SORT_ASC, $timestamp, SORT_ASC, $events);
 
-	// Marker value for the start in the loop
-	$event_day = 'start';
+    // Marker value for the start in the loop
+    $event_day = 'start';
 
-	// We only want the soonest recurring event on every day.
-	// Therefore, we need make sure only 1 recurrence_id occur per day.
-	$alreadyExistingEventsBasket = [];
+    // We only want the soonest recurring event on every day.
+    // Therefore, we need make sure only 1 recurrence_id occur per day.
+    $alreadyExistingEventsBasket = [];
 
-	foreach ( $events as $event ) {
+    foreach ($events as $event) {
+        $eventControlNumber = $event['day_number'] . '-' . $event['recurrence_id'];
 
-		$eventControlNumber = $event['day_number'] . '-' . $event['recurrence_id'];
+        if (! in_array($eventControlNumber, $alreadyExistingEventsBasket, true)) {
+            $alreadyExistingEventsBasket[] = $eventControlNumber;
 
-		if ( ! in_array( $eventControlNumber, $alreadyExistingEventsBasket ) ) {
+            // Need special markup for the first loop.
+            if ($event_day === 'start') {
+                $string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+                $string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
+                $string .= '<div class="menu-link menu-link-event-list">';
+            // Need special markup for new weekday in the loop.
+            } elseif ($event_day != $event['day']) {
+                $string .= '</div>'; // .menu-link-event-list
+                $string .= '</div>'; // .menu-link-flex
 
-			$alreadyExistingEventsBasket[] = $eventControlNumber;
+                $string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+                $string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
+                $string .= '<div class="menu-link menu-link-event-list">';
+            }
 
-			// Need special markup for the first loop.
-			if ( $event_day === 'start' ) {
-				$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
-				$string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
-				$string .= '<div class="menu-link menu-link-event-list">';
-				// Need special markup for new weekday in the loop.
-			} elseif ( $event_day != $event['day'] ) {
-				$string .= '</div>'; // .menu-link-event-list
-				$string .= '</div>'; // .menu-link-flex
+            $string .= '<a class="menu-link-flex" href="' . $event['guid'] . '">';
+            $string .= '<span class="menu-link-flex-item2">' . date('G:i', strtotime($event['start_time'])) . '</span> ';
+            $string .= '<span class="menu-link-flex-item3">' . $event['event_name'] . '</span>';
+            $string .= '</a>';
 
-				$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
-				$string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
-				$string .= '<div class="menu-link menu-link-event-list">';
-			}
+            $event_day = $event['day'];
+        }
+    }
 
-			$string .= '<a class="menu-link-flex" href="' . $event['guid'] . '">';
-			$string .= '<span class="menu-link-flex-item2">' . date( 'G:i', strtotime( $event['start_time'] ) ) . '</span> ';
-			$string .= '<span class="menu-link-flex-item3">' . $event['event_name'] . '</span>';
-			$string .= '</a>';
+    $string .= '</div>'; // .menu-link-event-list
+    $string .= '</div>'; // .menu-link-flex
 
-			$event_day = $event['day'];
-		}
-	}
-
-	$string .= '</div>'; // .menu-link-event-list
-	$string .= '</div>'; // .menu-link-flex
-
-	return $string;
+    return $string;
 }
 
-add_shortcode( 'em_advanced_notice', 'em_advanced_notice_func' );
+add_shortcode('em_advanced_notice', 'em_advanced_notice_func');
