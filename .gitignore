@@ -28,3 +28,9 @@ node_modules/
 *.sql
 *.sqlite
 !/package-lock.json
+
+# ignore authentification files (e.g. ACF plugin)
+auth.json
+
+# ignore composer vendor
+vendor/*
