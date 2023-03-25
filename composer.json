@@ -16,7 +16,8 @@
 	}
   ],
   "require": {
-	"wpengine/advanced-custom-fields-pro": "*"
+	"wpengine/advanced-custom-fields-pro": "*",
+	"ext-intl": "*"
   },
   "require-dev": {
 	"phpunit/phpunit": "*",
