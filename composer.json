@@ -1,0 +1,40 @@
+{
+  "name": "vendor_name/astra-child",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "MIT",
+  "authors": [
+	{
+	  "name": "heiko",
+	  "email": "mail@heikomamerow.dev"
+	}
+  ],
+  "repositories": [
+	{
+	  "type": "composer",
+	  "url": "https://connect.advancedcustomfields.com"
+	}
+  ],
+  "require": {
+	"wpengine/advanced-custom-fields-pro": "*"
+  },
+  "require-dev": {
+	"phpunit/phpunit": "*",
+	"roave/security-advisories": "dev-latest",
+	"squizlabs/php_codesniffer": "*",
+	"wp-cli/wp-cli": "*",
+	"wp-coding-standards/wpcs": "*"
+  },
+  "config": {
+	"allow-plugins": {
+	  "composer/installers": true
+	}
+  },
+  "extra": {
+	"installer-paths": {
+	  "/home/heiko/localwp/meditierenlernen/app/public/wp-content/plugins/{$name}/": [
+		"type:wordpress-plugin"
+	  ]
+	}
+  }
+}
