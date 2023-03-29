@@ -10,7 +10,7 @@
 /**
  * Enqueue scripts and styles.
  */
-function astra_parent_theme_enqueue() {
+function astra_parent_theme_enqueue(): void {
 	wp_enqueue_style( 'astra-child-style', get_stylesheet_directory_uri() . '/style.css' );
 }
 
@@ -32,8 +32,8 @@ function my_em_scope_conditions( $conditions, $args ) {
 	return $conditions;
 }
 
-add_filter( 'em_get_scopes', 'my_em_scopes', 1, 1 );
-function my_em_scopes( $scopes ) {
+add_filter( 'em_get_scopes', 'my_em_scopes', 1 );
+function my_em_scopes( $scopes ): array {
 	$my_scopes = [
 		'next7days' => 'next7days',
 	];
@@ -51,22 +51,27 @@ add_filter( 'the_content', 'do_shortcode' );
 /**
  * Shortcodes for advanced notice in menu "Wiederkehrende Veranstaltungen".
  */
-@include 'function_events-manager_shortcode_wiederkehrende-veranstaltungen.php';
+@require 'functions/events-manager_shortcode_wiederkehrende-veranstaltungen.php';
 
 /**
  * Shortcodes for advanced notice in menu "Zweigstellen".
  */
-@include 'function_events-manager_shortcode_zweigstellen.php';
+@require 'functions/events-manager_shortcode_zweigstellen.php';
 
 /**
  * Shortcodes for advanced notice in menu "Meditationskurse".
  */
-@include 'function_events-manager_shortcode_meditationskurse.php';
+@require 'functions/events-manager_shortcode_meditationskurse.php';
+
+/**
+ * Options page for Event Manager
+ */
+@require 'functions/events-manager-options-page.php';
 
 /**
  * Add meta tag on front page for Facebook check.
  */
-function facebook_domain_verification() {
+function facebook_domain_verification(): void {
 	if ( is_front_page() ) {
 		echo "\n" . '<meta name="facebook-domain-verification" content="jwhc6dx6k85c0pk18096orl3gj0v38" />' . "\n";
 	}
@@ -78,7 +83,7 @@ add_action( 'wp_head', 'facebook_domain_verification' );
 /**
  * Add meta tag on front page for Facebook Pixel.
  */
-function facebook_pixel() {
+function facebook_pixel(): void {
 	if ( is_front_page() ) {
 		echo "\n" . '<!-- Meta Pixel Code -->' . "\n";
 		echo "\n" . '<script>' . "\n";
