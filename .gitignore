@@ -34,3 +34,6 @@ auth.json
 
 # ignore composer vendor
 vendor/*
+
+# ignore cs fixer
+.php-cs-fixer.cache
