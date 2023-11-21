@@ -5,114 +5,137 @@
  */
 
 function em_menu_zweigstellen_func() {
-
-	$string         = '';
-	$recurrence_ids = [];
-
-	// Set to german language
-	//setlocale (LC_ALL, 'de_DE@euro', 'de_DE', 'de', 'ge');
-	setlocale( LC_ALL, 'de_DE' );
+	$string = '';
 
 	// Set to german time zone
 	date_default_timezone_set( 'Europe/Berlin' );
 
-	$scope_today         = date( 'Y-m-d' );
-	$scope_6days_later   = date( 'Y-m-d', strtotime( "+6 day" ) );
-	$scope_7days_later   = date( 'Y-m-d', strtotime( "+7 day" ) );
-	$scope_182days_later = date( 'Y-m-d', strtotime( "+182 day" ) );
+	// Set to german language
+	setlocale( LC_ALL, 'de_DE.UTF8' );
 
-	// Get events within the scope (today + 6 days)
+	// "strftime" is deprecated.
+	// We need to use IntlDateFormatter for date translation
+	$localDateformat = new IntlDateFormatter(
+		'de-DE',
+		IntlDateFormatter::FULL,
+		IntlDateFormatter::FULL,
+		'Europe/Berlin',
+		IntlDateFormatter::GREGORIAN,
+		'eee'
+	);
+
+	$number_days = 60;
+	$datetime    = '+' . $number_days . ' day';
+
+	$scope_today = date( 'Y-m-d' );
+	$scope_later = date( 'Y-m-d', strtotime( $datetime ) );
+
+	// Get all subcategories of "Zweigstellen" (25)
+	$branches = get_categories( [
+		'taxonomy' => 'event-categories',
+		'parent'   => 25, // 25 = Zweigstellen
+	] );
+
+	if ( empty( $branches ) ) {
+		return 'Keine Kategorie "Zweigstellen" gefunden.';
+	}
+
+	$branches_id = [];
+	foreach ( $branches as $branch ) {
+		$branches_id[] = $branch->term_id;
+	}
+
+	if ( empty( $branches_id ) ) {
+		return 'Keine Zweigstellen gefunden.';
+	}
+
+	// Get events within the scope (today + 31 days)
 	$em_events = EM_Events::get( [
 		'hide_empty'  => 1,
 		'recurrences' => 1,
-		'orderby'     => "event_start_date,event_start_time",
-		'scope'       => $scope_today . "," . $scope_6days_later,
-		'category'    => 'zweigstellen',
+		'orderby'     => 'event_start_date,event_start_time',
+		'scope'       => $scope_today . ',' . $scope_later,
+		'category'    => $branches_id,
 	] );
+
+	if ( empty( $em_events ) ) {
+		return 'Keine Veranstaltungen gefunden.';
+	}
 
 	// Set all event data in array.
 	foreach ( $em_events as $em_event ) {
+		$terms = get_the_terms( $em_event->post_id, 'event-categories' );
+		$term  = array_shift( $terms ); // Should only be one category per event.
+
 		$events[] = [
-			'day_number'    => date( 'N', strtotime( $em_event->start_date ) ),
-			'day'           => strftime( '%a', strtotime( $em_event->start_date ) ),
+			'day_number'    => gmdate( 'N', strtotime( $em_event->start_date ) ),
+			'day'           => $localDateformat->format( strtotime( $em_event->start_date ) ),
 			'timestamp'     => strtotime( $em_event->start_date ),
-			'start_time'    => date( 'G:i', strtotime( $em_event->start_time ) ),
+			'start_time'    => gmdate( 'H:i', strtotime( $em_event->start_time ) ),
 			'recurrence_id' => $em_event->recurrence_id,
 			'guid'          => $em_event->guid,
 			'event_name'    => $em_event->event_name,
+			'category_name' => $term->name,
 		];
 	}
 
-	// Get array of recurrende_ids.
-	foreach ( $events as $event ) {
-		$recurrence_ids[] = $event['recurrence_id'];
-	}
-
-	// Get events within the next scope (7 - 21 days)
-	$em_events_7_to_21 = EM_Events::get( [
-		'hide_empty'  => 1,
-		'recurrences' => 1,
-		'orderby'     => "event_start_date,event_start_time",
-		'scope'       => $scope_7days_later . "," . $scope_182days_later,
-		'category'    => 'zweigstellen',
-	] );
-
-
-	foreach ( $em_events_7_to_21 as $em_event_7_to_21 ) {
-
-		// We want recurrences from the first week.
-		if ( ! in_array( $em_event_7_to_21->recurrence_id, $recurrence_ids ) ) {
-
-			// Beware we can have still multiple events from one recurrence.
-			// Add this recurrence to the check and prevent later in the loop.
-			$recurrence_ids[] = $em_event_7_to_21->recurrence_id;
-
-			$events[] = [
-				'day_number'    => date( 'N', strtotime( $em_event_7_to_21->start_date ) ),
-				'day'           => strftime( '%a', strtotime( $em_event_7_to_21->start_date ) ),
-				'timestamp'     => strtotime( $em_event_7_to_21->start_date ),
-				'start_time'    => date( 'G:i', strtotime( $em_event_7_to_21->start_time ) ),
-				'recurrence_id' => $em_event_7_to_21->recurrence_id,
-				'guid'          => $em_event_7_to_21->guid,
-				'event_name'    => $em_event_7_to_21->event_name,
-			];
-
-		}
-
-	}
-
 	// First sort by day then by time and then by timestamp.
+	$event      = array_column( $events, 'event_name' );
 	$day_number = array_column( $events, 'day_number' );
 	$start_time = array_column( $events, 'start_time' );
 	$timestamp  = array_column( $events, 'timestamp' );
-	array_multisort( $day_number, SORT_ASC, $start_time, SORT_ASC, $timestamp, SORT_ASC, $events );
+	array_multisort( $event, $day_number, SORT_ASC, $start_time, SORT_ASC, $timestamp, SORT_ASC, $events );
 
 	// Marker value for the start in the loop
 	$event_day = 'start';
 
+	// We only want the soonest recurring event on every day.
+	// Therefore, we need make sure only 1 recurrence_id occur per day.
+	$alreadyExistingEventsBasket = [];
+
+	// Events are sorted by event name, day and time.
+	// We want this event name as heading.
+	$alreadyExistingEventsNameBasket = '';
+
 	foreach ( $events as $event ) {
+		$eventControlNumber = $event['day_number'] . '-' . $event['recurrence_id'];
 
-		// Need special markup for the first loop.
-		if ( $event_day === 'start' ) {
-			$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
-			$string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
-			$string .= '<div class="menu-link menu-link-event-list">';
-			// Need special markup for new weekday in the loop.
-		} elseif ( $event_day != $event['day'] ) {
-			$string .= '</div>'; // .menu-link-event-list
-			$string .= '</div>'; // .menu-link-flex
+		if ( ! in_array( $eventControlNumber, $alreadyExistingEventsBasket, true ) ) {
+			$alreadyExistingEventsBasket[] = $eventControlNumber;
 
-			$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
-			$string .= '<div class="menu-link menu-link-day">' . $event['day'] . '</div>';
-			$string .= '<div class="menu-link menu-link-event-list">';
+			// Need special markup for the first loop.
+			if ( $event_day === 'start' ) {
+				$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+				$string .= esc_html( $event['event_name'] );
+				$string .= '</div>'; // .menu-link-flex
+
+				$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+				$string .= '<div class="menu-link menu-link-day">' . esc_html( $event['day'] ) . '</div>';
+				$string .= '<div class="menu-link menu-link-event-list">';
+				// Need special markup for new weekday in the loop.
+			} elseif ( $event_day != $event['day'] ) {
+				$string .= '</div>'; // .menu-link-event-list
+				$string .= '</div>'; // .menu-link-flex
+
+				if ( $alreadyExistingEventsNameBasket !== $event['event_name'] ) {
+					$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+					$string .= esc_html( $event['event_name'] );
+					$string .= '</div>'; // .menu-link-flex
+
+					$alreadyExistingEventsNameBasket = $event['event_name'];
+				}
+				$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+				$string .= '<div class="menu-link menu-link-day">' . esc_html( $event['day'] ) . '</div>';
+				$string .= '<div class="menu-link menu-link-event-list">';
+			}
+
+			$string .= '<a class="menu-link-flex" href="' . esc_url( $event['guid'] ) . '">';
+			$string .= '<span class="menu-link-flex-item2">' . esc_html( date( 'G:i', strtotime( $event['start_time'] ) ) ) . '</span> ';
+			$string .= '<span class="menu-link-flex-item3">' . esc_html( $event['category_name'] ) . '</span>';
+			$string .= '</a>';
+
+			$event_day = $event['day'];
 		}
-
-		$string .= '<a class="menu-link-flex" href="' . $event['guid'] . '">';
-		$string .= '<span class="menu-link-flex-item2">' . date( 'G:i', strtotime( $event['start_time'] ) ) . '</span> ';
-		$string .= '<span class="menu-link-flex-item3">' . $event['event_name'] . '</span>';
-		$string .= '</a>';
-
-		$event_day = $event['day'];
 	}
 
 	$string .= '</div>'; // .menu-link-event-list
