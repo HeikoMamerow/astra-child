@@ -68,10 +68,10 @@ function em_menu_zweigstellen_func() {
 		$term  = array_shift( $terms ); // Should only be one category per event.
 
 		$events[] = [
-			'day_number'    => gmdate( 'N', strtotime( $em_event->start_date ) ),
+			'day_number'    => date( 'N', strtotime( $em_event->start_date ) ),
 			'day'           => $localDateformat->format( strtotime( $em_event->start_date ) ),
 			'timestamp'     => strtotime( $em_event->start_date ),
-			'start_time'    => gmdate( 'H:i', strtotime( $em_event->start_time ) ),
+			'start_time'    => date( 'H:i', strtotime( $em_event->start_time ) ),
 			'recurrence_id' => $em_event->recurrence_id,
 			'guid'          => $em_event->guid,
 			'event_name'    => $em_event->event_name,
