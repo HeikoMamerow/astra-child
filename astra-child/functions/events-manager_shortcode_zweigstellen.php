@@ -101,7 +101,8 @@ function em_menu_zweigstellen_func() {
 		$eventControlNumber = $event['day_number'] . '-' . $event['recurrence_id'];
 
 		if ( ! in_array( $eventControlNumber, $alreadyExistingEventsBasket, true ) ) {
-			$alreadyExistingEventsBasket[] = $eventControlNumber;
+			$alreadyExistingEventsBasket[]   = $eventControlNumber;
+			$alreadyExistingEventsNameBasket = $event['event_name'];
 
 			// Need special markup for the first loop.
 			if ( $event_day === 'start' ) {
