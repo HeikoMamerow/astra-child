@@ -106,7 +106,7 @@ function em_menu_zweigstellen_func() {
 
 			// Need special markup for the first loop.
 			if ( $event_day === 'start' ) {
-				$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+				$string .= '<div class="menu-link-flex em-recurring-events-in-menu branch-event-name">';
 				$string .= esc_html( $event['event_name'] );
 				$string .= '</div>'; // .menu-link-flex
 
@@ -119,7 +119,7 @@ function em_menu_zweigstellen_func() {
 				$string .= '</div>'; // .menu-link-flex
 
 				if ( $alreadyExistingEventsNameBasket !== $event['event_name'] ) {
-					$string .= '<div class="menu-link-flex em-recurring-events-in-menu">';
+					$string .= '<div class="menu-link-flex em-recurring-events-in-menu branch-event-name">';
 					$string .= esc_html( $event['event_name'] );
 					$string .= '</div>'; // .menu-link-flex
 

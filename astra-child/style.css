@@ -137,3 +137,8 @@ Here are the tweaks.
 .ast-header-break-point .main-navigation .sub-menu .zweigstellen-menu-title {
 	padding-left: 30px;
 }
+
+.branch-event-name {
+	padding-left: 1em;
+	padding-bottom: .45em;
+}
