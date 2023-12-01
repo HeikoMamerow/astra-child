@@ -35,6 +35,7 @@ function em_advanced_notice_func() {
 		'recurrences' => 1,
 		'orderby'     => "event_start_date,event_start_time",
 		'scope'       => $scope_today . "," . $scope_later,
+		'category'    => 15
 	] );
 
 	// Set all event data in array.
