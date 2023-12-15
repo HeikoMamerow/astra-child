@@ -60,7 +60,7 @@ Here are the tweaks.
 .menu-link-day {
 	font-weight: bold;
 	padding-right: 0 !important;
-	flex: 0 0 45px;
+	flex: 0 0 50px;
 }
 
 .ast-header-break-point .main-navigation ul.sub-menu .menu-item .menu-link.menu-link-flex::before,
