@@ -51,22 +51,22 @@ add_filter( 'the_content', 'do_shortcode' );
 /**
  * Shortcodes for advanced notice in menu "Wiederkehrende Veranstaltungen".
  */
-@require 'functions/events-manager_shortcode_wiederkehrende-veranstaltungen.php';
+@require 'events-manager/shortcode-wiederkehrende-veranstaltungen.php';
 
 /**
  * Shortcodes for advanced notice in menu "Zweigstellen".
  */
-@require 'functions/events-manager_shortcode_zweigstellen.php';
+@require 'events-manager/shortcode-zweigstellen.php';
 
 /**
  * Shortcodes for advanced notice in menu "Meditationskurse".
  */
-@require 'functions/events-manager_shortcode_meditationskurse.php';
+@require 'events-manager/shortcode-meditationskurse.php';
 
 /**
  * Options page for Event Manager
  */
-@require 'functions/events-manager-options-page.php';
+@require 'events-manager/options-page.php';
 
 /**
  * Add meta tag on front page for Facebook check.
