@@ -142,3 +142,7 @@ Here are the tweaks.
 	padding-left: 1em;
 	padding-bottom: .45em;
 }
+
+.branch-event-name:not(:first-of-type) {
+	margin-top: .9em;
+}

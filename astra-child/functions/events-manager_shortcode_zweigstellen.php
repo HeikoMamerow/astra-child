@@ -93,19 +93,15 @@ function em_menu_zweigstellen_func() {
 	// Therefore, we need make sure only 1 recurrence_id occur per day.
 	$alreadyExistingEventsBasket = [];
 
-	// Events are sorted by event name, day and time.
-	// We want this event name as heading.
-	$alreadyExistingEventsNameBasket = '';
-
 	foreach ( $events as $event ) {
 		$eventControlNumber = $event['day_number'] . '-' . $event['recurrence_id'];
 
 		if ( ! in_array( $eventControlNumber, $alreadyExistingEventsBasket, true ) ) {
-			$alreadyExistingEventsBasket[]   = $eventControlNumber;
-			$alreadyExistingEventsNameBasket = $event['event_name'];
-
+			$alreadyExistingEventsBasket[] = $eventControlNumber;
 			// Need special markup for the first loop.
 			if ( $event_day === 'start' ) {
+				$alreadyExistingEventsNameBasket = $event['event_name'];
+
 				$string .= '<div class="menu-link-flex em-recurring-events-in-menu branch-event-name">';
 				$string .= esc_html( $event['event_name'] );
 				$string .= '</div>'; // .menu-link-flex
