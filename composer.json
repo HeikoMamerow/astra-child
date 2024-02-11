@@ -4,39 +4,43 @@
   "minimum-stability": "stable",
   "license": "MIT",
   "authors": [
-	{
-	  "name": "heiko",
-	  "email": "mail@heikomamerow.dev"
-	}
+    {
+      "name": "heiko",
+      "email": "mail@heikomamerow.dev"
+    }
   ],
   "repositories": [
-	{
-	  "type": "composer",
-	  "url": "https://connect.advancedcustomfields.com"
-	}
+    {
+      "type": "composer",
+      "url": "https://connect.advancedcustomfields.com"
+    }
   ],
   "require": {
-	"wpengine/advanced-custom-fields-pro": "*",
-	"ext-intl": "*"
+    "wpengine/advanced-custom-fields-pro": "*",
+    "ext-intl": "*"
   },
   "require-dev": {
-	"phpunit/phpunit": "*",
-	"roave/security-advisories": "dev-latest",
-	"squizlabs/php_codesniffer": "*",
-	"wp-cli/wp-cli": "*",
-	"wp-coding-standards/wpcs": "*"
+    "dealerdirect/phpcodesniffer-composer-installer": "*",
+    "phpcompatibility/php-compatibility": "*",
+    "phpcompatibility/phpcompatibility-wp": "*",
+    "phpunit/phpunit": "*",
+    "roave/security-advisories": "dev-latest",
+    "squizlabs/php_codesniffer": "*",
+    "wp-cli/wp-cli": "*",
+    "wp-coding-standards/wpcs": "*"
   },
+  "prefer-stable": true,
   "config": {
-	"allow-plugins": {
+    "allow-plugins": {
       "composer/installers": true,
       "dealerdirect/phpcodesniffer-composer-installer": true
     }
   },
   "extra": {
-	"installer-paths": {
-	  "/home/heiko/localwp/meditierenlernen/app/public/wp-content/plugins/{$name}/": [
-		"type:wordpress-plugin"
-	  ]
-	}
+    "installer-paths": {
+      "/home/heiko/localwp/meditierenlernen/app/public/wp-content/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ]
+    }
   }
 }
