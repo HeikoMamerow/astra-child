@@ -24,6 +24,26 @@ Here are the tweaks.
 	display: block !important;
 }
 
+/* Events Manager Menu */
+.kmc-em-menu-title {
+	padding-left: 1em;
+	padding-right: 1em;
+	margin-bottom: .25rem;
+}
+
+.kmc-em-menu-link {
+	display: grid;
+	grid-template-columns: 1.5rem 2.5rem auto;
+	column-gap: 1rem;
+	padding-left: 1em;
+	padding-right: 1em;
+	margin-bottom: .5rem;
+}
+
+.kmc-em-menu-col2 {
+	text-align: right;
+}
+
 /* Tweaks for Wiederkehrende Veranstaltungen in menu. */
 .menu-link-flex p {
 	margin-bottom: 0;
