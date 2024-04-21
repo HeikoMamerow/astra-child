@@ -9,6 +9,7 @@
  * e.g. [em_menu cat_id=23 limit=3 recurrences=0]
  *
  * Zweigstellen
+ * Show next termin from every branch.
  * e.g. [em_menu cat_id=25 get_branches=1]
  */
 
@@ -83,7 +84,6 @@ function em_menu_func( $atts ) {
 			'scope'       => $scope_today . ',' . $scope_later,
 		]
 	);
-
 	if ( empty( $em_events ) ) {
 		return 'Keine Veranstaltungen gefunden.';
 	}
@@ -109,11 +109,12 @@ function em_menu_func( $atts ) {
 	$day_number = array_column( $events, 'day_number' );
 	$start_time = array_column( $events, 'start_time' );
 	$timestamp  = array_column( $events, 'timestamp' );
+
 	if ( $atts['recurrences'] === '0' ) { // Meditationskurse
 		array_multisort( $timestamp, $start_time, $events );
 	} elseif ( $atts['get_branches'] === '1' ) { // Zweigstellen
 		$event = array_column( $events, 'event_name' );
-		array_multisort( $timestamp, $start_time, $event, $events );
+		array_multisort( $event, $timestamp, $start_time, $events );
 	} else { // Wochenprogramm
 		// Sort by day then by time and then by timestamp.
 		array_multisort( $day_number, $start_time, $timestamp, $events );
@@ -170,15 +171,15 @@ function em_menu_func( $atts ) {
 		// Iterate trough $events and toggle duplicate event_name to empty string.
 		$event_name = '';
 		foreach ( $events as $key => $event ) {
+			$sanitized_event_name = preg_replace( '/[^a-zA-Z0-9]/', '', $event['event_name'] );
 			// When $event['category_name'] is already in $category_name_basket skip the loop.
-			if ( in_array( $event['category_name'], $category_name_basket, true ) ) {
+			if ( in_array( [ $sanitized_event_name, $event['category_name'] ], $category_name_basket, true ) ) {
 				unset( $events[ $key ] );
 				continue;
 			} else {
-				$category_name_basket[] = $event['category_name'];
+				$category_name_basket[] = [ $sanitized_event_name, $event['category_name'] ];
 			}
 			// When $event['event_name'] is already in $event_name toggle it to empty string.
-			$sanitized_event_name = preg_replace( '/[^a-zA-Z0-9]/', '', $event['event_name'] );
 			if ( $event_name === $sanitized_event_name ) {
 				$events[ $key ]['event_name'] = '';
 			} else {
