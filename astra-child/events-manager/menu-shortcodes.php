@@ -91,7 +91,10 @@ function em_menu_func( $atts ) {
 	$events = [];
 	foreach ( $em_events as $em_event ) {
 		$terms = get_the_terms( $em_event->post_id, 'event-categories' );
-		$term  = array_shift( $terms ); // Should only be one category per event.
+		if ( empty( $terms ) || ! is_array( $terms ) ) {
+			continue;
+		}
+		$term = array_shift( $terms ); // Should only be one category per event.
 
 		$events[] = [
 			'day_number'    => date( 'N', strtotime( $em_event->start_date ) ),
